@@ -14,6 +14,23 @@ function PostList() {
             });
     }, []);
 
+    // 削除処理
+    const handleDelete = (id) => {
+        if(!window.confirm("本当に削除しますか？")) return;
+
+        fetch(`http://localhost:8080/api/posts/${id}`, {
+            method: 'DELETE',
+        })
+            .then(() =>{
+                // 一覧を再取得する
+                setPosts(posts.filter(post => post.id !== id));
+            })
+            .catch(error => {
+                console.error("削除失敗：", error);
+                window.alert("削除に失敗しました");
+            })
+    }
+
     return (
         <div>
             <h2>投稿一覧</h2>
@@ -28,6 +45,7 @@ function PostList() {
                             <small>投稿者ID: {post.userId}</small>
                             <Link to={`/posts/show/${post.id}`}>詳細</Link>
                             <Link to={`/posts/edit/${post.id}`}>編集</Link>
+                            <button onClick={() => handleDelete(post.id)}>削除</button>
                         </li>
                     ))}
                 </ul>
