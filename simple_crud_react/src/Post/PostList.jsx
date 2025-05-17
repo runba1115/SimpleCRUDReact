@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useDeletePost } from '../hooks/DeletePost';
 
 function PostList() {
     const [posts, setPosts] = useState([]);
+    const deletePost = useDeletePost((id) => {
+        setPosts(posts.filter(post => post.id !== id));
+    });
 
     useEffect(() => {
         fetch('http://localhost:8080/api/posts')
@@ -14,25 +18,9 @@ function PostList() {
             });
     }, []);
 
-    // 削除処理
-    const handleDelete = (id) => {
-        if(!window.confirm("本当に削除しますか？")) return;
-
-        fetch(`http://localhost:8080/api/posts/${id}`, {
-            method: 'DELETE',
-        })
-            .then(() =>{
-                // 一覧を再取得する
-                setPosts(posts.filter(post => post.id !== id));
-            })
-            .catch(error => {
-                console.error("削除失敗：", error);
-                window.alert("削除に失敗しました");
-            })
-    }
-
     return (
         <div>
+            <Link to={`/posts/new`}>新規作成</Link>
             <h2>投稿一覧</h2>
             {posts.length === 0 ? (
                 <p>投稿がまだありません</p>
@@ -45,7 +33,7 @@ function PostList() {
                             <small>投稿者ID: {post.userId}</small>
                             <Link to={`/posts/show/${post.id}`}>詳細</Link>
                             <Link to={`/posts/edit/${post.id}`}>編集</Link>
-                            <button onClick={() => handleDelete(post.id)}>削除</button>
+                            <button onClick={() => deletePost(post.id)}>削除</button>
                         </li>
                     ))}
                 </ul>

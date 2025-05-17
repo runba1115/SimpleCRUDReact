@@ -31,7 +31,7 @@ function PostForm() {
             }
 
             // 成功したら一覧ページにリダイレクト
-            navigate('/');
+            navigate('/posts/index');
         } catch (error) {
             console.error(error);
             alert('エラーが発生しました');
