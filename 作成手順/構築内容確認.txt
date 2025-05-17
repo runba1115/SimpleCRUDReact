@@ -1,0 +1,32 @@
+・OS
+エディション：Windows 11 Home
+	→この通りであることを確認した。
+
+・インストール済ソフトウェア
+VSCode、A5:SQL Mk-2、Docker Desktop、Slack
+	→インストールされている。
+
+・Git
+git version 2.41.0.windows.3
+	→わずかに異なるが…そんなに違いはない。問題なし。
+
+
+使用言語やフレームワーク:
+・Java
+openjdk 17.0.2 2022-01-18
+OpenJDK Runtime Environment (build 17.0.2+8-86)
+OpenJDK 64-Bit Server VM (build 17.0.2+8-86, mixed mode, sharing)
+	→インストール済み。
+	
+・Spring Boot
+Spring Boot 3.4.4
+・React
+v18.3.1
+
+・Node.js
+v22.14.0
+	→インストール完了した
+
+・MySQL
+Mysql 8.0
+	→わずかに異なるが…そんなに違いはない。問題なし。
