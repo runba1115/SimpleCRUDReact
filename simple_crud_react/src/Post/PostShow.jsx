@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'; // Reactの基本機能とフックを読み込み
 import { useParams } from 'react-router-dom';       // URLパラメータ（id）取得のためのフック
+import {Link} from 'react-router-dom';
 
 function PostShow() {
     // URLの /posts/show/:id に含まれる「id」を取得
@@ -26,6 +27,7 @@ function PostShow() {
     // データが取得できていれば、画面に表示
     return (
         <div>
+            <Link to={`/posts/index`}>一覧に戻る</Link>
             <h2>投稿詳細</h2>
             <p><strong>タイトル:</strong> {post.title}</p>
             <p><strong>内容:</strong> {post.content}</p>
