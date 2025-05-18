@@ -30,6 +30,24 @@ function App() {
             .catch(err => console.error('自動ログイン確認失敗:', err));
     }, []);
 
+    const handleLogout = () => {
+        fetch("http://localhost:8080/logout", {
+            method: "POST",
+            credentials: "include"
+        }).then((res) => {
+            if (res.ok) {
+                // ログアウト成功 → 状態クリア！
+                setIsAuthenticated(false);
+                setUserInfo(null);
+                setUserId(null);
+                setEmail('');
+                console.log("ログアウトしました");
+            } else {
+                console.error("ログアウト失敗");
+            }
+        });
+    };
+
     return (
         <BrowserRouter>
             <div>
@@ -39,6 +57,7 @@ function App() {
                             <div>
                                 <p>{userInfo.email}</p>
                                 <p>{userInfo.id}</p>
+                                <button onClick={handleLogout}>ログアウト</button>
                             </div>
                         )
                         : (
@@ -55,7 +74,7 @@ function App() {
                 <Route path="/posts/show/:id" element={<PostShow />} />
                 <Route path="/posts/edit/:id" element={<PostEdit userId={userId} />} />
                 <Route path="/users/register" element={<UserRegister />} />
-                <Route path="/users/login" element={<UserLogin />} />
+                <Route path="/users/login" element={<UserLogin setIsAuthenticated={setIsAuthenticated} setUserInfo={setUserInfo}/>} />
                 <Route path="*" element={<Navigate to="/posts/index" />} /> {/* 不正なURLが入力されたら一覧画面に移動させる */}
             </Routes>
         </BrowserRouter>

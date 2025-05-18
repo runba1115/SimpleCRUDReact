@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function UserLogin() {
+function UserLogin({ setIsAuthenticated, setUserInfo }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -29,6 +29,8 @@ function UserLogin() {
                 const userInfo = await meRes.json();
 
                 alert('ログイン成功');
+                setIsAuthenticated(true);   // ← ここでAppの状態更新！
+                setUserInfo(userInfo);      // ← これでユーザー情報も保存！
                 navigate("/posts/index");
             } else {
                 alert('ログイン失敗');
