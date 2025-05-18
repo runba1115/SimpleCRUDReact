@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-function PostEdit() {
+function PostEdit({userId}) {
     const { id } = useParams(); // URLのパラメータ（ID）を取得する
     const navigate = useNavigate(); // 編集成功後の画面遷移に使用する
     const [post, setPost] = useState({
@@ -14,7 +14,16 @@ function PostEdit() {
     useEffect(() => {
         fetch(`http://localhost:8080/api/posts/${id}`)
             .then(response => response.json())
-            .then(data => setPost(data))
+            .then(data => {
+                if(data.userId === userId)
+                {
+                    setPost(data)
+                }
+                else{
+                    alert('この投稿を表示する権限がありません');
+                    navigate('/posts/index');
+                }
+            })
             .catch(error => {
                 console.error('取得エラー：', error);
                 alert('投稿の取得に失敗しました')
@@ -71,16 +80,6 @@ function PostEdit() {
                     <textarea 
                         name="content"
                         value={post.content}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>ユーザーID：</label>
-                    <input 
-                        type="number" 
-                        name="userId"
-                        value={post.userId}
                         onChange={handleChange}
                         required
                     />

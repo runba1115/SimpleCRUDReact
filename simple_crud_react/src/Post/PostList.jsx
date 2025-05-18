@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDeletePost } from '../hooks/DeletePost';
 
-function PostList() {
+function PostList({ userId }) {
     const [posts, setPosts] = useState([]);
     const deletePost = useDeletePost((id) => {
         setPosts(posts.filter(post => post.id !== id));
@@ -26,16 +26,21 @@ function PostList() {
                 <p>投稿がまだありません</p>
             ) : (
                 <ul>
-                    {posts.map(post => (
-                        <li key={post.id}>
+                    {posts.map(post => {
+                        const isOwner = post.userId == userId;
+                        const buttonStyle = {
+                            color: isOwner ? 'blue' : 'gray',
+                        };
+
+                        return (<li key={post.id}>
                             <h3>{post.title}</h3>
                             <p>{post.content}</p>
                             <small>投稿者ID: {post.userId}</small>
-                            <Link to={`/posts/show/${post.id}`}>詳細</Link>
-                            <Link to={`/posts/edit/${post.id}`}>編集</Link>
+                            <Link to={`/posts/show/${post.id}`} style={buttonStyle}>詳細</Link>
+                            <Link to={`/posts/edit/${post.id}`} style={buttonStyle}>編集</Link>
                             <button onClick={() => deletePost(post.id)}>削除</button>
-                        </li>
-                    ))}
+                        </li>);
+                    })}
                 </ul>
             )}
         </div>

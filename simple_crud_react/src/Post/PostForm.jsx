@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function PostForm() {
+function PostForm({userId}) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const navigate = useNavigate(); // 成功後に画面遷移するためのフック
@@ -23,7 +23,7 @@ function PostForm() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title, content, userId: 1 }), // 仮の userId
+                body: JSON.stringify({ title, content, userId }), // 仮の userId
             });
 
             if (!response.ok) {
@@ -32,6 +32,7 @@ function PostForm() {
 
             // 成功したら一覧ページにリダイレクト
             navigate('/posts/index');
+            alert("投稿が完了しました");
         } catch (error) {
             console.error(error);
             alert('エラーが発生しました');
