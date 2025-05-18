@@ -1,79 +1,61 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import PostForm from './Post/PostForm';
 import PostList from './Post/PostList';
 import PostShow from './Post/PostShow';
 import PostEdit from './Post/PostEdit';
+import UserRegister from './User/UserRegister';
+import UserLogin from './User/UserLogin';
 import React, { useState, useEffect } from 'react';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [email, setEmail] = useState('');
     const [userId, setUserId] = useState(null);
+    const [userInfo, setUserInfo] = useState(null);
 
     useEffect(() => {
-        const storedEmail = localStorage.getItem("email");
-        const storedUserId = localStorage.getItem("userId");
-        if (storedEmail && storedUserId) {
-            setIsAuthenticated(true);
-            setEmail(storedEmail);
-            setUserId(Number(storedUserId));
-            return;
-        }
-
-        const login = () => {
-            const users = [
-                { id: 0, email: "admin@example.com", password: "password123" },
-                { id: 1, email: "user@example.com", password: "password456" },
-            ];
-
-            const inputEmail = prompt("メールアドレスを入力してください：", "");
-            const inputPassword = prompt("パスワードを入力してください：", "");
-            const matchedUser = users.find(
-                user => user.email === inputEmail && user.password === inputPassword
-            );
-
-            if (matchedUser) {
-                setIsAuthenticated(true);
-                setEmail(matchedUser.email);
-                setUserId(matchedUser.id)
-                localStorage.setItem("email", matchedUser.email);
-                localStorage.setItem("userId", matchedUser.id);
-                alert("ログインに成功しました！");
-            } else {
-                alert("ログインに失敗しました。ページを再読み込みして再試行してください。")
-            }
-        };
-
-        login();
+        // 自動ログイン状態確認（任意）
+        fetch('http://localhost:8080/api/users/me', {
+            credentials: 'include'
+        })
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data && data.email) {
+                    setUserInfo(data);
+                    setIsAuthenticated(true);
+                }
+            })
+            .catch(err => console.error('自動ログイン確認失敗:', err));
     }, []);
-
-    const handleLogout = () => {
-        localStorage.removeItem("email");
-        setEmail("");
-        setUserId(null);
-        setIsAuthenticated(false);
-        alert("ログアウトしました。再読み込みで再ログインできます。");
-    };
-
-    if (!isAuthenticated) {
-        return <p>ログインが必要です。ページを再読み込みして実行してください。</p>
-    }
 
     return (
         <BrowserRouter>
             <div>
-                ログイン中：{email}
-                <button onClick={handleLogout}>
-                    ログアウト
-                </button>
+                {
+                    isAuthenticated
+                        ? (
+                            <div>
+                                <p>{userInfo.email}</p>
+                                <p>{userInfo.id}</p>
+                            </div>
+                        )
+                        : (
+                            <>
+                                <Link to="users/register">新規登録</Link>
+                                <Link to="/users/login">ログインする</Link>
+                            </>
+                        )
+                }
             </div>
             <Routes>
-                <Route path="/posts/new" element={<PostForm userId = {userId}/>} />
-                <Route path="/posts/index" element={<PostList userId = {userId}/>} />
+                <Route path="/posts/new" element={<PostForm userId={userInfo?.id} />} />
+                <Route path="/posts/index" element={<PostList userId={userInfo?.id} />} />
                 <Route path="/posts/show/:id" element={<PostShow />} />
-                <Route path="/posts/edit/:id" element={<PostEdit userId = {userId} />} />
+                <Route path="/posts/edit/:id" element={<PostEdit userId={userId} />} />
+                <Route path="/users/register" element={<UserRegister />} />
+                <Route path="/users/login" element={<UserLogin />} />
                 <Route path="*" element={<Navigate to="/posts/index" />} /> {/* 不正なURLが入力されたら一覧画面に移動させる */}
             </Routes>
         </BrowserRouter>

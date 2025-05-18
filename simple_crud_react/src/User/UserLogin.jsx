@@ -1,0 +1,71 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+function UserLogin() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        const formData = new URLSearchParams();
+        formData.append('username', email);
+        formData.append('password', password);
+
+        try {
+            const response = await fetch('http://localhost:8080/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                credentials: 'include',
+                body: formData
+            });
+
+            if (response.ok) {
+                const meRes = await fetch('http://localhost:8080/api/users/me', {
+                    credentials: 'include'
+                });
+                const userInfo = await meRes.json();
+
+                alert('ログイン成功');
+                navigate("/posts/index");
+            } else {
+                alert('ログイン失敗');
+            }
+        } catch (error) {
+            console.error('通信エラー:', error);
+            alert('サーバーへの接続に失敗しました');
+        }
+    };
+
+    return (
+        <form onSubmit={handleLogin}>
+            <div>
+                <label>メールアドレス:</label><br />
+                <input
+                    type="email"
+                    value={email}
+                    autoComplete="username"
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="メールアドレス"
+                    required
+                />
+            </div>
+            <div>
+                <label>パスワード:</label><br />
+                <input
+                    type="password"
+                    value={password}
+                    autoComplete="current-password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="パスワード"
+                    required
+                />
+            </div>
+            <button type="submit">ログイン</button>
+        </form>
+    );
+}
+
+export default UserLogin;
