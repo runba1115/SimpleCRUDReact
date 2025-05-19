@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-function PostEdit({userId}) {
+function PostEdit({ userId }) {
     const { id } = useParams(); // URLのパラメータ（ID）を取得する
     const navigate = useNavigate(); // 編集成功後の画面遷移に使用する
     const [post, setPost] = useState({
@@ -12,22 +12,25 @@ function PostEdit({userId}) {
 
     // 初期表示時に投稿データを取得する
     useEffect(() => {
-        fetch(`http://localhost:8080/api/posts/${id}`)
-            .then(response => response.json())
-            .then(data => {
-                if(data.userId === userId)
-                {
-                    setPost(data)
+        const fetchPost = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/posts/${id}`);
+                const data = await response.json();
+                if (data.userId == userId) {
+                    setPost(data);
+                } else {
+                    alert("この投稿を表示する権限がありません");
+                    navigate("/posts/index");
                 }
-                else{
-                    alert('この投稿を表示する権限がありません');
-                    navigate('/posts/index');
-                }
-            })
-            .catch(error => {
+            }
+            catch (error) {
                 console.error('取得エラー：', error);
-                alert('投稿の取得に失敗しました')
-            });
+                alert('投稿の取得に失敗しました');
+                navigate("/posts/index");
+            }
+        };
+
+        fetchPost();
     }, [id]);
 
     // 入力値が変更された問いの処理
@@ -37,28 +40,29 @@ function PostEdit({userId}) {
     };
 
     // フォーム送信時の処理
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         // ページリロードを防ぐ
         e.preventDefault();
 
-        fetch(`http://localhost:8080/api/posts/${id}`, {
+        const response = await fetch(`http://localhost:8080/api/posts/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(post)
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('投稿を更新しました');
-                    navigate('/posts/index');    // 更新世交互に一覧画面へ移動する
-                }
-                else {
-                    throw new Error('更新に失敗しました');
-                }
-            })
-            .catch(error => {
-                console.error('更新エラー', error);
-                alert('エラーが発生しました');
-            });
+        });
+
+        if (response.ok) {
+            alert('投稿を更新しました');
+            navigate('/posts/index');    // 更新世交互に一覧画面へ移動する
+        }
+        else {
+            if (response.status === 400) {
+                // バリデーションエラー
+                const messages = await response.json();
+                alert(messages.join("\n"));
+            } else {
+                throw new Error("更新に失敗しました");
+            }
+        }
     };
 
     return (
@@ -67,17 +71,16 @@ function PostEdit({userId}) {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>タイトル</label>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         name="title"
                         value={post.title}
                         onChange={handleChange}
-                        required
                     />
                 </div>
                 <div>
                     <label>内容</label>
-                    <textarea 
+                    <textarea
                         name="content"
                         value={post.content}
                         onChange={handleChange}
@@ -85,7 +88,7 @@ function PostEdit({userId}) {
                     />
                 </div>
                 <input
-                    type="submit" 
+                    type="submit"
                     value="更新する"
                 />
             </form>

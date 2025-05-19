@@ -72,7 +72,7 @@ function App() {
                 <Route path="/posts/new" element={<PostForm userId={userInfo?.id} />} />
                 <Route path="/posts/index" element={<PostList userId={userInfo?.id} />} />
                 <Route path="/posts/show/:id" element={<PostShow />} />
-                <Route path="/posts/edit/:id" element={<PostEdit userId={userId} />} />
+                <Route path="/posts/edit/:id" element={<PostEdit userId={userInfo?.id} />} />
                 <Route path="/users/register" element={<UserRegister />} />
                 <Route path="/users/login" element={<UserLogin setIsAuthenticated={setIsAuthenticated} setUserInfo={setUserInfo}/>} />
                 <Route path="*" element={<Navigate to="/posts/index" />} /> {/* 不正なURLが入力されたら一覧画面に移動させる */}

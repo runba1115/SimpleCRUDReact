@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "posts")
@@ -20,6 +22,8 @@ public class Post {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @NotBlank(message = "タイトルの長さを0文字にはできません")
+    @Size(max = 255, message = "タイトルは255文字以内で入力してください")
     @Column(nullable = false, length = 255)
     private String title;
 

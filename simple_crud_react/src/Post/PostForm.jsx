@@ -10,12 +10,6 @@ function PostForm({userId}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // バリデーション
-        if (!title || !content) {
-            alert('タイトルと内容を入力してください');
-            return;
-        }
-
         // APIにPOST
         try {
             const response = await fetch('http://localhost:8080/api/posts', {
@@ -23,11 +17,17 @@ function PostForm({userId}) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title, content, userId }), // 仮の userId
+                body: JSON.stringify({ title, content, userId }),
             });
 
             if (!response.ok) {
-                throw new Error('投稿に失敗しました');
+                if(response.status === 400){
+                    const messages = await response.json();
+                    alert(messages.join('\n'));
+                }else{
+                    throw new Error("投稿に失敗しました");
+                }
+                return;
             }
 
             // 成功したら一覧ページにリダイレクト

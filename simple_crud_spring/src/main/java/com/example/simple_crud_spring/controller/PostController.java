@@ -3,6 +3,7 @@ package com.example.simple_crud_spring.controller;
 import com.example.simple_crud_spring.model.Post;
 import com.example.simple_crud_spring.repository.PostRepository;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class PostController {
     }
 
     @PostMapping
-    public Post create(@RequestBody Post post) {
+    public Post create(@Valid @RequestBody Post post) {
         return postRepository.save(post);
     }
 
@@ -44,7 +45,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public Post update(@PathVariable Long id, @RequestBody Post updatedPost) {
+    public Post update(@PathVariable Long id, @Valid @RequestBody Post updatedPost) {
         return postRepository.findById(id)
                 .map(post -> {
                     post.setTitle(updatedPost.getTitle());
