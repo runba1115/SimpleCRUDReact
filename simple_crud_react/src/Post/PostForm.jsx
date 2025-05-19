@@ -2,6 +2,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
+import { API_BASE_URL } from '../config/Constant';
 
 function PostForm() {
     const { userInfo, isAuthenticated, } = useContext(UserContext);
@@ -20,7 +21,7 @@ function PostForm() {
         e.preventDefault();
         // APIにPOST
         try {
-            const response = await fetch('http://localhost:8080/api/posts', {
+            const response = await fetch(`${API_BASE_URL}/api/posts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

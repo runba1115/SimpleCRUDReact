@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/Constant';
 
 function UserLogin({ setIsAuthenticated, setUserInfo }) {
     const [email, setEmail] = useState('');
@@ -13,7 +14,7 @@ function UserLogin({ setIsAuthenticated, setUserInfo }) {
         formData.append('password', password);
 
         try {
-            const response = await fetch('http://localhost:8080/login', {
+            const response = await fetch(`${API_BASE_URL}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -23,7 +24,7 @@ function UserLogin({ setIsAuthenticated, setUserInfo }) {
             });
 
             if (response.ok) {
-                const meRes = await fetch('http://localhost:8080/api/users/me', {
+                const meRes = await fetch(`${API_BASE_URL}/api/users/me`, {
                     credentials: 'include'
                 });
                 const userInfo = await meRes.json();

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
+import { API_BASE_URL } from '../config/Constant';
 
 function PostEdit() {
     const { isAuthenticated, userInfo } = useContext(UserContext);
@@ -21,7 +22,7 @@ function PostEdit() {
 
         const fetchPost = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/posts/${id}`);
+                const response = await fetch(`${API_BASE_URL}/api/posts/${id}`);
                 const data = await response.json();
                 if (data.userId == userInfo.id) {
                     setPost(data);
@@ -51,7 +52,7 @@ function PostEdit() {
         // ページリロードを防ぐ
         e.preventDefault();
 
-        const response = await fetch(`http://localhost:8080/api/posts/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/posts/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(post)

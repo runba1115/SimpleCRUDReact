@@ -1,10 +1,11 @@
 import { useCallback } from "react";
+import { API_BASE_URL } from "../config/Constant";
 
 export function useDeletePost(onSuccess) {
     const deletePost = useCallback((id) => {
         if (!window.confirm("本当に削除しますか？")) return;
 
-        fetch(`http://localhost:8080/api/posts/${id}`, {
+        fetch(`${API_BASE_URL}/api/posts/${id}`, {
             method: 'DELETE',
         })
             .then(() => {

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDeletePost } from '../hooks/DeletePost';
 import { UserContext } from '../contexts/UserContext';
+import { API_BASE_URL } from '../config/Constant';
 
 function PostList() {
     const {userInfo} = useContext(UserContext);
@@ -11,7 +12,7 @@ function PostList() {
     });
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/posts/all')
+        fetch(`${API_BASE_URL}/api/posts/all`)
             .then(response => response.json())
             .then(data => {
                 if (!Array.isArray(data)) {

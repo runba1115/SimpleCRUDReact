@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react';
+import { API_BASE_URL } from '../config/Constant';
 
 export const UserContext = createContext();
 
@@ -9,7 +10,7 @@ export const UserProvider = ({ children }) => {
     // 自動ログイン確認用関数
     const initializeUser = async () => {
         try {
-            const res = await fetch('http://localhost:8080/api/users/me', {
+            const res = await fetch(`${API_BASE_URL}/api/users/me`, {
                 credentials: 'include',
             });
             if (res.ok) {
@@ -29,7 +30,7 @@ export const UserProvider = ({ children }) => {
 
     const handleLogout = async () => {
         try {
-            const res = await fetch("http://localhost:8080/logout", {
+            const res = await fetch(`${API_BASE_URL}/logout`, {
                 method: "POST",
                 credentials: "include",
             });

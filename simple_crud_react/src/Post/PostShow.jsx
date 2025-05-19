@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'; // Reactの基本機能と�
 import { useParams, useNavigate } from 'react-router-dom';       // URLパラメータ（id）取得のためのフック
 import { Link } from 'react-router-dom';
 import { useDeletePost } from '../hooks/DeletePost';
+import { API_BASE_URL } from '../config/Constant';
 
 function PostShow() {
     // URLの /posts/show/:id に含まれる「id」を取得
@@ -17,7 +18,7 @@ function PostShow() {
     // ページが表示されたとき（初回レンダリング時）に一度だけ実行
     useEffect(() => {
         // Spring BootのAPIから該当idの投稿を取得
-        fetch(`http://localhost:8080/api/posts/${id}`)
+        fetch(`${API_BASE_URL}/api/posts/${id}`)
             .then(response => response.json())   // JSONデータとして解釈
             .then(data => setPost(data))         // 取得したデータを state に保存
             .catch(error => {
