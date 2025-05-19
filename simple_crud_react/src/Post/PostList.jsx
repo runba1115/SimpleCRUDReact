@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDeletePost } from '../hooks/DeletePost';
+import { UserContext } from '../contexts/UserContext';
 
-function PostList({ userId }) {
+function PostList() {
+    const {userInfo} = useContext(UserContext);
     const [posts, setPosts] = useState([]);
     const deletePost = useDeletePost((id) => {
         setPosts(posts.filter(post => post.id !== id));
@@ -34,20 +36,17 @@ function PostList({ userId }) {
             ) : (
                 <ul>
                     {posts.map(post => {
-                        // const isOwner = post.userId == userId;
-                        // const buttonStyle = {
-                        //     // color: isOwner ? 'blue' : 'gray',
-                        //     color: 'blue',
-                        // };
+                        const isOwner = post.userId == userInfo?.id;
+                        const buttonStyle = {
+                            color: isOwner ? 'blue' : 'gray',
+                        };
 
                         return (<li key={post.id}>
                             <h3>{post.title}</h3>
                             <p>{post.content}</p>
                             <small>投稿者ID: {post.userId}</small>
-                            {/* <Link to={`/posts/show/${post.id}`} style={buttonStyle}>詳細</Link>
-                            <Link to={`/posts/edit/${post.id}`} style={buttonStyle}>編集</Link> */}
-                            <Link to={`/posts/show/${post.id}`} >詳細</Link>
-                            <Link to={`/posts/edit/${post.id}`} >編集</Link>
+                            <Link to={`/posts/show/${post.id}`} style={buttonStyle}>詳細</Link>
+                            <Link to={`/posts/edit/${post.id}`} style={buttonStyle}>編集</Link>
                             <button onClick={() => deletePost(post.id)}>削除</button>
                         </li>);
                     })}

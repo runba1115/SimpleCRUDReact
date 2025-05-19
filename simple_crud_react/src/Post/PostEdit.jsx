@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { UserContext } from '../contexts/UserContext';
 
-function PostEdit({ userId }) {
+function PostEdit() {
+    const { isAuthenticated , userInfo} = useContext(UserContext);
     const { id } = useParams(); // URLのパラメータ（ID）を取得する
     const navigate = useNavigate(); // 編集成功後の画面遷移に使用する
     const [post, setPost] = useState({
@@ -10,13 +12,18 @@ function PostEdit({ userId }) {
         userId: ''
     });
 
+    if(!isAuthenticated){
+        alert("未ログインです");
+        navigate("/posts/index");
+    }
+
     // 初期表示時に投稿データを取得する
     useEffect(() => {
         const fetchPost = async () => {
             try {
                 const response = await fetch(`http://localhost:8080/api/posts/${id}`);
                 const data = await response.json();
-                if (data.userId == userId) {
+                if (data.userId == userInfo.id) {
                     setPost(data);
                 } else {
                     alert("この投稿を表示する権限がありません");

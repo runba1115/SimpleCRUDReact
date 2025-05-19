@@ -39,9 +39,9 @@ function App() {
             </div>
             <Routes>
                 <Route path="/posts/new" element={<PostForm />} />
-                <Route path="/posts/index" element={<PostList userId={userInfo?.id} />} />
+                <Route path="/posts/index" element={<PostList />} />
                 <Route path="/posts/show/:id" element={<PostShow />} />
-                <Route path="/posts/edit/:id" element={<PostEdit userId={userInfo?.id} />} />
+                <Route path="/posts/edit/:id" element={<PostEdit />} />
                 <Route path="/users/register" element={<UserRegister />} />
                 <Route path="/users/login" element={<UserLogin setIsAuthenticated={setIsAuthenticated} setUserInfo={setUserInfo}/>} />
                 <Route path="*" element={<Navigate to="/posts/index" />} />

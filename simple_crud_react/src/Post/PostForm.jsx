@@ -3,14 +3,14 @@ import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 
-function PostForm({userId}) {
+function PostForm() {
     const { userInfo, isAuthenticated, } = useContext(UserContext);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const navigate = useNavigate(); // 成功後に画面遷移するためのフック
 
     useEffect(() => {
-        if(!isAuthenticated){
+        if(!isAuthenticated || !userInfo){
             alert("未ログインです。ログインしてください。");
             navigate("/posts/index");
         }
@@ -18,7 +18,6 @@ function PostForm({userId}) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         // APIにPOST
         try {
             const response = await fetch('http://localhost:8080/api/posts', {
@@ -26,7 +25,7 @@ function PostForm({userId}) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title, content, userId }),
+                body: JSON.stringify({ title, content, userId: userInfo.id }),
             });
 
             if (!response.ok) {
