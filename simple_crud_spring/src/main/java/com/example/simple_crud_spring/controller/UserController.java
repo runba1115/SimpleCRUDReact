@@ -36,6 +36,10 @@ public class UserController {
             return null;
         }
 
-        return (User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
+        return new UserResponse(user.getId(), user.getEmail());
+    }
+
+    private record UserResponse(Long id, String email) {
     }
 }
