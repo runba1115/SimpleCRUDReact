@@ -1,6 +1,5 @@
 package com.example.simple_crud_spring.service;
 
-import com.example.simple_crud_spring.model.User;
 import com.example.simple_crud_spring.repository.UserRepository;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;

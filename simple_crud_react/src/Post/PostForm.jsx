@@ -1,11 +1,20 @@
 // src/PostForm.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../contexts/UserContext';
 
 function PostForm({userId}) {
+    const { userInfo, isAuthenticated, } = useContext(UserContext);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const navigate = useNavigate(); // 成功後に画面遷移するためのフック
+
+    useEffect(() => {
+        if(!isAuthenticated){
+            alert("未ログインです。ログインしてください。");
+            navigate("/posts/index");
+        }
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
