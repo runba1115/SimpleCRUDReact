@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 
 function PostEdit() {
-    const { isAuthenticated , userInfo} = useContext(UserContext);
+    const { isAuthenticated, userInfo } = useContext(UserContext);
     const { id } = useParams(); // URLのパラメータ（ID）を取得する
     const navigate = useNavigate(); // 編集成功後の画面遷移に使用する
     const [post, setPost] = useState({
@@ -12,13 +12,13 @@ function PostEdit() {
         userId: ''
     });
 
-    if(!isAuthenticated){
-        alert("未ログインです");
-        navigate("/posts/index");
-    }
-
     // 初期表示時に投稿データを取得する
     useEffect(() => {
+        if (!isAuthenticated) {
+            alert("未ログインです");
+            navigate("/posts/index");
+        }
+
         const fetchPost = async () => {
             try {
                 const response = await fetch(`http://localhost:8080/api/posts/${id}`);
@@ -38,7 +38,7 @@ function PostEdit() {
         };
 
         fetchPost();
-    }, [id]);
+    }, [id, userInfo]);
 
     // 入力値が変更された問いの処理
     const handleChange = (e) => {

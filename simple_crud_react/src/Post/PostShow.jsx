@@ -6,8 +6,7 @@ import { useDeletePost } from '../hooks/DeletePost';
 function PostShow() {
     // URLの /posts/show/:id に含まれる「id」を取得
     const { id } = useParams();
-    const {navigate} = useNavigate();
-    // const deletePost = useDeletePost(() => { navigate('/posts/index'); });
+    const navigate = useNavigate();
     const deletePost = useDeletePost(() => {
         navigate('/posts');
     });

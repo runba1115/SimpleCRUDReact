@@ -14,7 +14,7 @@ function PostForm() {
             alert("未ログインです。ログインしてください。");
             navigate("/posts/index");
         }
-    });
+    },[isAuthenticated, userInfo]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
