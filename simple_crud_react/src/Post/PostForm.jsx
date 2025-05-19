@@ -3,6 +3,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { API_BASE_URL } from '../config/Constant';
+import PostFormFields from '../components/PostFormFields';
 
 function PostForm() {
     const { userInfo, isAuthenticated, } = useContext(UserContext);
@@ -49,27 +50,15 @@ function PostForm() {
     };
 
     return (
-        <div>
-            <h2>新規投稿</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>タイトル:</label>
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>内容:</label>
-                    <textarea
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                    />
-                </div>
-                <button type="submit">投稿する</button>
-            </form>
-        </div>
+        <PostFormFields 
+            formTitle="新規投稿" 
+            title={title} 
+            content={content} 
+            onTitleChange={(e)=> setTitle(e.target.value)} 
+            onContentChange={(e) => setContent(e.target.value)} 
+            onSubmit={handleSubmit}
+            buttonLabel="投稿する"
+        />
     );
 }
 

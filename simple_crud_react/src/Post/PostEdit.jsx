@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { API_BASE_URL } from '../config/Constant';
+import PostFormFields from '../components/PostFormFields';
 
 function PostEdit() {
     const { isAuthenticated, userInfo } = useContext(UserContext);
@@ -74,33 +75,42 @@ function PostEdit() {
     };
 
     return (
-        <div>
-            <h2>投稿編集</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>タイトル</label>
-                    <input
-                        type="text"
-                        name="title"
-                        value={post.title}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <label>内容</label>
-                    <textarea
-                        name="content"
-                        value={post.content}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <input
-                    type="submit"
-                    value="更新する"
-                />
-            </form>
-        </div>
+        <PostFormFields 
+            formTitle="投稿編集" 
+            title={post.title} 
+            content={post.content} 
+            onTitleChange={handleChange} 
+            onContentChange={handleChange} 
+            onSubmit={handleSubmit}
+            buttonLabel="投稿する"
+        />
+        // <div>
+        //     <h2>投稿編集</h2>
+        //     <form onSubmit={handleSubmit}>
+        //         <div>
+        //             <label>タイトル</label>
+        //             <input
+        //                 type="text"
+        //                 name="title"
+        //                 value={post.title}
+        //                 onChange={handleChange}
+        //             />
+        //         </div>
+        //         <div>
+        //             <label>内容</label>
+        //             <textarea
+        //                 name="content"
+        //                 value={post.content}
+        //                 onChange={handleChange}
+        //                 required
+        //             />
+        //         </div>
+        //         <input
+        //             type="submit"
+        //             value="更新する"
+        //         />
+        //     </form>
+        // </div>
     );
 }
 
