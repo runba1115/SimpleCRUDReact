@@ -4,10 +4,15 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Table(name = "posts")
+@SQLDelete(sql = "UPDATE posts SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 public class Post {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,13 +36,13 @@ public class Post {
     private LocalDateTime deletedAt;
 
     @PrePersist
-    protected void onCreate(){
+    protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
-    protected void onUpdate(){ 
+    protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
@@ -97,5 +102,4 @@ public class Post {
         this.deletedAt = deletedAt;
     }
 
-    
 }
