@@ -3,6 +3,8 @@ package com.example.simple_crud_spring.controller;
 import com.example.simple_crud_spring.model.User;
 import com.example.simple_crud_spring.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +35,7 @@ public class UserController {
     @GetMapping("/me")
     public Object getCurrentUser(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         User user = (User) authentication.getPrincipal();

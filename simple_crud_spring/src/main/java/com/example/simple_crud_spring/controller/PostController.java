@@ -19,19 +19,7 @@ public class PostController {
 
     @GetMapping("/all")
     public List<Post> getAll() {
-        System.out.println("取得開始");
-
-        List<Post> allPosts;
-        try {
-            allPosts = postRepository.findAll();
-            System.out.println("取得成功: " + allPosts.size() + " 件");
-        } catch (Exception e) {
-            System.out.println("エラー発生: " + e.getMessage());
-            e.printStackTrace(); // これが一番重要です♡
-            return List.of(); // 空リスト返して回避
-        }
-
-        return allPosts;
+        return postRepository.findAll();
     }
 
     @PostMapping
@@ -50,7 +38,6 @@ public class PostController {
                 .map(post -> {
                     post.setTitle(updatedPost.getTitle());
                     post.setContent(updatedPost.getContent());
-                    post.setUserId(updatedPost.getUserId());
                     return postRepository.save(post);
                 })
                 .orElse(null);

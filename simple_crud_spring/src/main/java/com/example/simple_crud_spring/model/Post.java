@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -19,14 +20,17 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @NotNull(message = "ユーザーIDを空にはできません（ログインしていますか？）")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @NotBlank(message = "タイトルの長さを0文字にはできません")
     @Size(max = 255, message = "タイトルは255文字以内で入力してください")
     @Column(nullable = false, length = 255)
     private String title;
 
+    @Lob
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
@@ -54,12 +58,8 @@ public class Post {
         return id;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public User getUser() {
+        return user;
     }
 
     public String getTitle() {
@@ -82,24 +82,12 @@ public class Post {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public LocalDateTime getDeletedAt() {
         return deletedAt;
-    }
-
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
     }
 
 }

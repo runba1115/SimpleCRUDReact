@@ -14,13 +14,20 @@ export const UserProvider = ({ children }) => {
                 credentials: 'include',
             });
             if (res.ok) {
-                const text = await res.text(); // ← まずは text で受け取る！
-                if (text) {
-                    const data = JSON.parse(text); // ← 中身があれば JSON にパース
-                    setUserInfo(data);
-                    setIsAuthenticated(true);
-                } else {
-                    console.log("空のレスポンスなのでログイン状態ではありません");
+                const data = await res.json();
+                console.log(data);
+                setUserInfo(data);
+                setIsAuthenticated(true);
+            }else{
+                if(res.status === 401){
+                    // 未認証
+                    console.log("未認証です");
+                    setUserInfo(null);
+                    setIsAuthenticated(false);
+                }
+                else{
+                    // 想定外のエラーが発生した
+                    console.warn(`想定外のエラーが発生しました ${res.status} ${res.json}`)
                 }
             }
         } catch (error) {
