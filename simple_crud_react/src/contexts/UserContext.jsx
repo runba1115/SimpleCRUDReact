@@ -18,14 +18,14 @@ export const UserProvider = ({ children }) => {
                 console.log(data);
                 setUserInfo(data);
                 setIsAuthenticated(true);
-            }else{
-                if(res.status === 401){
+            } else {
+                if (res.status === 401) {
                     // 未認証
                     console.log("未認証です");
                     setUserInfo(null);
                     setIsAuthenticated(false);
                 }
-                else{
+                else {
                     // 想定外のエラーが発生した
                     console.warn(`想定外のエラーが発生しました ${res.status} ${res.json}`)
                 }
@@ -65,4 +65,12 @@ export const UserProvider = ({ children }) => {
             {children}
         </UserContext.Provider>
     );
+};
+
+export const useUser = () => {
+    const context = useContext(UserContext);
+    if (!context) {
+        throw new Error('useUser must be used within a UserProvider');
+    }
+    return context;
 };
