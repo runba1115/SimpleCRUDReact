@@ -27,7 +27,7 @@ function PostForm() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title, content, userId: userInfo.id }),
+                body: JSON.stringify({ title, content, user: {id: userInfo.id} }),
             });
 
             if (!response.ok) {

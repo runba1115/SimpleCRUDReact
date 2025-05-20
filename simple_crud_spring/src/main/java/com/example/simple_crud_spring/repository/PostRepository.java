@@ -3,9 +3,12 @@ package com.example.simple_crud_spring.repository;
 import com.example.simple_crud_spring.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PostRepository extends JpaRepository<Post, Long>{
-    // 基底クラスのJpaRepositoryの機能を使用して
-    // 基本的なIDを用いた値の取得および削除、すべてのデータの取得が行えるため、
-    // このクラスに特別な実装は行わない
-    // ※今後、機能を拡張するにあたり必要である可能性があるため、作成したのみ
+/**
+ * 投稿エンティティ {@link Post} に対するデータアクセス操作を定義するリポジトリインタフェース
+ * ※現在は、{@link JpaRepository} によって提供される基本的なCRUD操作（保存、取得、削除など）のみを使用しており、
+ * このインタフェース自体には独自のメソッド定義は存在しない。
+ * 今後、特定の条件による検索やカスタムクエリの追加が必要になった場合に備え、拡張可能な形で作成している。
+ */
+public interface PostRepository extends JpaRepository<Post, Long> {
+    // 追加のメソッドは現在未定義（将来の拡張用）
 }

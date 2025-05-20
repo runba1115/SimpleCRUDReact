@@ -37,7 +37,7 @@ function PostList() {
             ) : (
                 <ul>
                     {posts.map(post => {
-                        const isOwner = post.userId == userInfo?.id;
+                        const isOwner = post.user.id == userInfo?.id;
                         const buttonStyle = {
                             color: isOwner ? 'blue' : 'gray',
                         };

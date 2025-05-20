@@ -6,28 +6,51 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.example.simple_crud_spring.dto.ErrorResponseDto;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * アプリケーション全体で発生する例外を一括で処理するためのクラス
+ * バリデーションエラーや予期しないサーバーエラーを統一的に処理してレスポンスを返す
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // バリデーションエラー用（フィールド名なし）
+    /**
+     * バリデーション失敗時の例外を処理する
+     *
+     * @param ex バリデーション例外（@Valid や @Validated によってスローされる）
+     * @return 各フィールドごとのエラーメッセージを含むレスポンス（ステータスコード400）
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<String>> handleValidationException(MethodArgumentNotValidException ex) {
-        List<String> errorMessages = ex.getBindingResult()
+    public ResponseEntity<List<ErrorResponseDto>> handleValidationException(MethodArgumentNotValidException ex) {
+        // すべてのバリデーションエラーをフィールド名とメッセージのDTOに変換する
+        List<ErrorResponseDto> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> error.getDefaultMessage())
+                .map(error -> new ErrorResponseDto(error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
+        // HTTP 400 Bad Request でレスポンス
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+
     }
 
-    // 任意：その他の例外
+    /**
+     * その他すべての例外を一括処理する
+     *
+     * @param ex 予期しない例外
+     * @return サーバーエラーを表すレスポンスDTO（ステータスコード500）
+     */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGenericException(Exception ex) {
-        ex.printStackTrace(); // 開発用ログ
-        return new ResponseEntity<>("サーバーエラーが発生しました", HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponseDto> handleGenericException(Exception ex) {
+        // 開発用に例外スタックトレースを出力する
+        ex.printStackTrace();
+
+        // クライアントには簡潔なエラーメッセージのみ返す
+        ErrorResponseDto error = new ErrorResponseDto("server", "エラーが発生しました");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

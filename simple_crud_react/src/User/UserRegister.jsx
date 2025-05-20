@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { API_BASE_URL } from '../config/Constant';
 
 function UserRegister() {
+    const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -14,7 +15,7 @@ function UserRegister() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ userName, email, password })
             });
 
             if (response.ok) {
@@ -35,6 +36,15 @@ function UserRegister() {
         <div>
             <h2>ユーザー登録</h2>
             <form onSubmit={handleRegister}>
+                <div>
+                    <label>ユーザー名:</label>
+                    <input
+                        type="text"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        required
+                    />
+                </div>
                 <div>
                     <label>メールアドレス:</label>
                     <input
