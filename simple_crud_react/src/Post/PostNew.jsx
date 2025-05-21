@@ -1,11 +1,11 @@
 // src/PostForm.jsx
-import React, { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { API_BASE_URL } from '../config/Constant';
 import PostFormFields from '../components/PostFormFields';
 
-function PostForm() {
+function PostNew() {
     const { userInfo, isAuthenticated, } = useContext(UserContext);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -62,4 +62,4 @@ function PostForm() {
     );
 }
 
-export default PostForm;
+export default PostNew;

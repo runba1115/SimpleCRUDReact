@@ -1,5 +1,3 @@
-import React from 'react';
-
 function PostFormFields({ formTitle, title, content, onTitleChange, onContentChange, onSubmit, buttonLabel }) {
     return (
         <div>

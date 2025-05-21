@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react'; // Reactの基本機能とフックを読み込み
+import { useEffect, useState } from 'react'; // Reactの基本機能とフックを読み込み
 import { useParams, useNavigate } from 'react-router-dom';       // URLパラメータ（id）取得のためのフック
 import { Link } from 'react-router-dom';
+import { API_BASE_URL, ROUTES } from '../config/Constant';
 import { useDeletePost } from '../hooks/DeletePost';
-import { API_BASE_URL } from '../config/Constant';
 
 function PostShow() {
     // URLの /posts/show/:id に含まれる「id」を取得
     const { id } = useParams();
     const navigate = useNavigate();
-    const deletePost = useDeletePost(() => {
-        navigate('/posts');
-    });
+    const deletePost = useDeletePost();
 
     // 投稿データを格納するstate（最初はnull）
     const [post, setPost] = useState(null);
@@ -41,7 +39,7 @@ function PostShow() {
             <p><strong>作成日時:</strong> {post.createdAt}</p>
             <p><strong>更新日時:</strong> {post.updatedAt || 'なし'}</p>
             <p><strong>削除日時:</strong> {post.deletedAt || 'なし'}</p>
-            <button onClick={()=> deletePost(post.id)}></button>
+            <button onClick={() => deletePost(post.id, navigate(ROUTES.POST_INDEX))}>削除</button>
 
         </div>
     );

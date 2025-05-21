@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { UserProvider } from './contexts/UserContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,7 +14,9 @@ root.render(
     // ただし、npm run build で本番用にビルドした後、npx serve -s build などで表示した場合は、
     // React.StrictMode が残っていても実際の副作用処理は 1 回だけ実行され、本番に近い挙動になる。
     // <React.StrictMode>
-    <App />
+    <UserProvider>
+        <App />
+    </UserProvider>
     // </React.StrictMode>
 );
 
