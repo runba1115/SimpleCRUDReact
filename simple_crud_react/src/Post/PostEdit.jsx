@@ -1,116 +1,149 @@
-import { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { UserContext } from '../contexts/UserContext';
-import { API_BASE_URL } from '../config/Constant';
+import { useEffect, useState } from 'react';
+import { API_BASE_URL, APIS, HTTP_STATUS_CODES, MESSAGES, ROUTES } from '../config/Constant';
+import { useUser } from '../contexts/UserContext';
+import { useBlockIfNotLoggedIn } from '../hooks/BlockIfNotLoggedIn';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useCreateErrorFromResponse } from '../hooks/CreateErrorFromResponse';
+import { useShowErrorMessage } from '../hooks/ShowErrorMessage';
+import { useBlockIfNotCreater } from '../hooks/BlockIfNotCreater';
 import PostFormFields from '../components/PostFormFields';
 
+/**
+ * 投稿編集画面
+ * @returns 投稿編集画面
+ */
 function PostEdit() {
-    const { isAuthenticated, userInfo } = useContext(UserContext);
-    const { id } = useParams(); // URLのパラメータ（ID）を取得する
-    const navigate = useNavigate(); // 編集成功後の画面遷移に使用する
+    // URL パラメータから投稿 ID を取得
+    const {id} = useParams();
+
+    // 送信中かどうかの状態を管理。初期値は false（送信中でない）
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const { userInfo } = useUser();
     const [post, setPost] = useState({
         title: '',
         content: '',
-        userId: ''
+        userId: '',
     });
+    const blockIfNotLoggedIn = useBlockIfNotLoggedIn();
+    const blockIfNotCreater = useBlockIfNotCreater();
+    const createErrorFromResponse = useCreateErrorFromResponse();
+    const showErrorMessage = useShowErrorMessage();
+    const navigate = useNavigate();
 
-    // 初期表示時に投稿データを取得する
-    useEffect(() => {
-        if (!isAuthenticated) {
-            alert("未ログインです");
-            navigate("/posts/index");
+   /**
+     * フォームの入力値が変更されたときのハンドラ
+     * @param {Event} e - イベントオブジェクト
+     */
+    const handleChange = (e) => {
+        // 変更されたフィールドの名前と値を取得する
+        const { name, value } = e.target;
+
+        // 前の状態を基に状態を更新する
+        setPost(prevPost => ({ ...prevPost, [name]: value }));
+    }
+
+    /**
+     * フォームが送信されたときのハンドラ
+     * @param {Event} e - イベントオブジェクト
+     */
+    const handleSubmit = async (e) => {
+        if (isSubmitting) {
+            // 送信中である。中断する。
+            return;
         }
 
-        const fetchPost = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/posts/${id}`);
-                const data = await response.json();
-                if (data.userId == userInfo.id) {
-                    setPost(data);
+        setIsSubmitting(true);
+
+        // フォームのデフォルトの送信動作をキャンセルする
+        e.preventDefault();
+
+        try {
+            // API を呼び出して投稿を更新する
+            const response = await fetch(
+                `${API_BASE_URL}${APIS.POST_EDIT(userInfo.id)}`,
+                {
+                    method: 'PUT',
+                    headers:
+                    {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(post)
+                }
+            );
+
+            if (response.ok) {
+                // 更新に成功した。投稿一覧に遷移する。
+                alert(MESSAGES.POST_UPDATE_SUCCESSED);
+                navigate(ROUTES.POST_INDEX);
+            }
+            else {
+                if (response.status === HTTP_STATUS_CODES.NOT_FOUND) {
+                    // 更新対象の投稿が見つからなかった（削除された可能性がある）。投稿一覧に遷移する。
+                    alert(MESSAGES.POST_NOT_FOUND);
+                    navigate(ROUTES.POST_INDEX);
                 } else {
-                    alert("この投稿を表示する権限がありません");
-                    navigate("/posts/index");
+                    // 想定外のエラーが発生した。
+                    throw await createErrorFromResponse();
                 }
             }
-            catch (error) {
-                console.error('取得エラー：', error);
-                alert('投稿の取得に失敗しました');
-                navigate("/posts/index");
+        } catch (error) {
+            showErrorMessage(error, MESSAGES.POST_UPDATE_FAILED);
+        }
+        finally {
+            // 送信完了したため送信中フラグを解除する
+            setIsSubmitting(false);
+        }
+    }
+
+    // 初めて表示された時の初期化処理
+    useEffect(() => {
+        // ログインしていない場合ブロックする
+        blockIfNotLoggedIn();
+
+        /**
+         * 編集対象の投稿を取得する非同期関数
+         */
+        const fetchPost = async () => {
+            try {
+                // API を呼び出して投稿データを取得する
+                const response = await fetch(`${API_BASE_URL}${APIS.POST_GET_BY_ID(id)}`);
+                if (response.ok) {
+                    // 投稿の取得に成功した場合
+                    const data = await response.json();
+                    // 投稿の作成者でない場合ブロックする
+                    blockIfNotCreater(data);
+
+                    setPost(data)
+                } else {
+                    // 投稿の取得に失敗した場合
+                    if (response.status === HTTP_STATUS_CODES.NOT_FOUND) {
+                        // 更新対象の投稿が見つからなかった（削除された可能性がある）。投稿一覧に遷移する。
+                        alert(MESSAGES.POST_NOT_FOUND);
+                        navigate(ROUTES.POST_INDEX);
+                    } else {
+                        // 想定外のエラーが発生した
+                        throw await createErrorFromResponse();
+                    }
+                }
+            } catch (error) {
+                showErrorMessage(error, MESSAGES.POST_UPDATE_FAILED);
             }
         };
 
         fetchPost();
-    }, [id, userInfo]);
+    }, [blockIfNotLoggedIn, blockIfNotCreater,createErrorFromResponse, showErrorMessage , id, navigate, userInfo]);
 
-    // 入力値が変更された問いの処理
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setPost(prevPost => ({ ...prevPost, [name]: value }));
-    };
-
-    // フォーム送信時の処理
-    const handleSubmit = async (e) => {
-        // ページリロードを防ぐ
-        e.preventDefault();
-
-        const response = await fetch(`${API_BASE_URL}/api/posts/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(post)
-        });
-
-        if (response.ok) {
-            alert('投稿を更新しました');
-            navigate('/posts/index');    // 更新世交互に一覧画面へ移動する
-        }
-        else {
-            if (response.status === 400) {
-                // バリデーションエラー
-                const messages = await response.json();
-                alert(messages.join("\n"));
-            } else {
-                throw new Error("更新に失敗しました");
-            }
-        }
-    };
 
     return (
-        <PostFormFields 
-            formTitle="投稿編集" 
-            title={post.title} 
-            content={post.content} 
-            onTitleChange={handleChange} 
-            onContentChange={handleChange} 
+        <PostFormFields
+            formTitle={'投稿編集'}
+            title={post.title}
+            content={post.content}
+            onPostChange={handleChange}
             onSubmit={handleSubmit}
-            buttonLabel="投稿する"
+            buttonLabel={"更新する"}
         />
-        // <div>
-        //     <h2>投稿編集</h2>
-        //     <form onSubmit={handleSubmit}>
-        //         <div>
-        //             <label>タイトル</label>
-        //             <input
-        //                 type="text"
-        //                 name="title"
-        //                 value={post.title}
-        //                 onChange={handleChange}
-        //             />
-        //         </div>
-        //         <div>
-        //             <label>内容</label>
-        //             <textarea
-        //                 name="content"
-        //                 value={post.content}
-        //                 onChange={handleChange}
-        //                 required
-        //             />
-        //         </div>
-        //         <input
-        //             type="submit"
-        //             value="更新する"
-        //         />
-        //     </form>
-        // </div>
     );
 }
 

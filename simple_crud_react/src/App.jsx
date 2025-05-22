@@ -17,10 +17,9 @@ import { ROUTES } from './config/Constant';
  * SPAとして各ページをルーティングしつつ、
  * 初回読み込み時にログイン情報を確認する処理を行う。
  *
- * @returns {JSX.Element} アプリケーション全体のルーティング構造
+ * @returns アプリケーション全体のルーティング構造
  */
 function App() {
-    // ContextからinitializeUser関数だけ取り出す
     const {initializeUser} = useUser();
 
     // コンポーネントの初回マウント時にログイン状態を確認する
@@ -53,3 +52,4 @@ function App() {
 
 // Appコンポーネントを外部に公開する（index.jsで使用）
 export default App;
+

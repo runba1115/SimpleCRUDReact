@@ -3,12 +3,8 @@ import { useUser } from "../contexts/UserContext";
 import { ROUTES } from "../config/Constant";
 
 /**
- * アプリケーション全体で表示されるヘッダーコンポーネント
- * ログイン状態に応じて、ユーザー情報やログアウトボタン、
- * または新規登録・ログインリンクを切り替えて表示する
- *
- * @component
- * @returns {JSX.Element} - ヘッダーとして表示されるReact要素
+ * アプリケーション全体で表示されるヘッダー
+ * @returns ヘッダー
  */
 function Header() {
     // Contextからログイン中のユーザー情報・状態・ログアウト関数を取得する

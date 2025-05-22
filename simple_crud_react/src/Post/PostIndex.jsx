@@ -1,33 +1,21 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { API_BASE_URL, APIS, MESSAGES, ROUTES } from '../config/Constant';
 import { useDeletePost } from '../hooks/DeletePost';
 import { useCreateErrorFromResponse } from '../hooks/CreateErrorFromResponse';
+import { useShowErrorMessage } from '../hooks/ShowErrorMessage';
 
 /**
- * 投稿一覧を表示する画面コンポーネント
- *
- * - APIから投稿一覧を取得して表示
- * - 投稿者本人には「編集」「削除」ボタンを表示
- * - 削除成功後は投稿一覧を再取得
- *
- * @component
- * @returns {JSX.Element} 投稿一覧画面
+ * 投稿一覧画面
+ * @returns 投稿一覧画面
  */
 function PostIndex() {
-    // 認証中ユーザー情報をContextから取得（idの比較に使用）
     const { userInfo } = useContext(UserContext);
-
-    // 投稿一覧データの状態管理
     const [posts, setPosts] = useState([]);
-
-    // 投稿削除処理用のカスタムフック（confirm, API, navigate含む）
-    const deletePost = useDeletePost();
-
-
-    // fetchのresponseがok以外の場合に使用する、想定外の値が帰ってきた場合にErrorを作成する共通機能
+    const deletePost = useDeletePost(useCallback(() => {getPosts();}, []));
     const createErrorFromResponse = useCreateErrorFromResponse();
+    const showErrorMessage = useShowErrorMessage();
 
     /**
      * 投稿一覧をAPI経由で取得してStateに格納する関数
@@ -44,12 +32,11 @@ function PostIndex() {
                 setPosts(resultPosts);
             } else {
                 // 想定外のステータスコード（4xx/5xxなど）
-                throw createErrorFromResponse(res);
+                throw await createErrorFromResponse(res);
             }
         } catch (error) {
             // ネットワークエラーまたはthrowされたErrorをキャッチ
-            console.error(MESSAGES.INTERNAL_ERROR, error);
-            alert(MESSAGES.INTERNAL_ERROR);
+            showErrorMessage(error, MESSAGES.POST_GET_FAILED);
 
             // 投稿を空にする
             setPosts([]);
@@ -70,7 +57,6 @@ function PostIndex() {
      */
     const handleDelete = async (id) => {
         await deletePost(id);
-        getPosts();
     }
 
     return (
@@ -94,7 +80,7 @@ function PostIndex() {
                         return (<li key={post.id}>
                             <h3>{post.title}</h3>
                             <p>{post.content}</p>
-                            <small>投稿者ID: {post.userId}</small>
+                            <small>投稿者ID: {post.user.id}</small>
                             <Link to={ROUTES.POST_SHOW(post.id)} style={buttonStyle}>詳細</Link>
                             <Link to={ROUTES.POST_EDIT(post.id)} style={buttonStyle}>編集</Link>
                             <button onClick={() => handleDelete(post.id)}>削除</button>

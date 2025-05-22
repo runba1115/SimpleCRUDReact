@@ -1,11 +1,11 @@
+import { useCallback } from "react";
+
 /**
  * fetchのResponseオブジェクトから詳細付きのErrorオブジェクトを生成し、throwするためのカスタムフック
  *
  * 通常の `new Error()` ではHTTPステータスやレスポンス本文が含まれないため、
  * このフックはそれらを追加したErrorオブジェクトを作成・スローする関数を提供する。
- *
- * @function useCreateErrorFromResponse
- * @returns {function} createErrorFromResponse - 非同期関数。fetchのResponseを受け取り、Errorを生成してthrowする
+ * @returns  createErrorFromResponse - 非同期関数。fetchのResponseを受け取り、Errorを生成してthrowする
  */
 export const useCreateErrorFromResponse = () => {
     /**
@@ -14,14 +14,10 @@ export const useCreateErrorFromResponse = () => {
      * 通常の `new Error()` ではHTTPステータスやレスポンス本文が含まれないため、
      * この関数はそれらをErrorオブジェクトに追加して例外として扱えるようにする。
      * 非同期関数の中で `throw await createErrorFromResponse(res)` のように使う。
-     *
-     * @async
-     * @function createErrorFromResponse
      * @param {Response} res - fetch API から返されたレスポンスオブジェクト（Response型）
-     * @throws {Error} - 拡張されたErrorオブジェクト（status, body, responseを含む）
      *
      */
-    const createErrorFromResponse = async (res) => {
+    const createErrorFromResponse = useCallback(async (res) => {
         // レスポンス本文（プレーンテキスト or JSON文字列）を取得
         const body = await res.text();
 
@@ -39,7 +35,7 @@ export const useCreateErrorFromResponse = () => {
 
         // 拡張済みのErrorオブジェクトをスロー（呼び出し元でtry-catchすること）
         throw error;
-    }
+    }, []);
 
     return createErrorFromResponse;
 }

@@ -1,16 +1,29 @@
 import { useState } from 'react';
-import { API_BASE_URL } from '../config/Constant';
+import { API_BASE_URL, APIS, MESSAGES, ROUTES } from '../config/Constant';
+import { useShowErrorMessage } from '../hooks/ShowErrorMessage';
+import { Routes, useNavigate } from 'react-router-dom';
 
+/**
+ * ユーザー登録画面
+ * @returns ユーザー登録画面
+ */
 function UserRegister() {
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const showErrorMessage = useShowErrorMessage();
+    const navigate = useNavigate();
 
+    /**
+     * フォーム送信時に実行されるログイン処理
+     * @param {Event} e - フォーム送信イベント
+     */
     const handleRegister = async (e) => {
+        // フォームのデフォルトの送信動作（ページリロード）をキャンセルする
         e.preventDefault();
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/users/register`, {
+            const response = await fetch(`${API_BASE_URL}${APIS.USER_REGISTER}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -19,16 +32,14 @@ function UserRegister() {
             });
 
             if (response.ok) {
-                alert('ユーザー登録に成功しました');
-                setEmail('');
-                setPassword('');
+                alert(MESSAGES.USER_REGISTER_SUCCESSED);
+                navigate(ROUTES.USER_LOGIN);
             } else {
                 const errorText = await response.text();
                 alert('登録に失敗しました: ' + errorText);
             }
         } catch (error) {
-            console.error('通信エラー:', error);
-            alert('サーバーに接続できませんでした');
+            showErrorMessage(error, MESSAGES.USER_REGISTER_FAILED);
         }
     };
 
@@ -70,3 +81,4 @@ function UserRegister() {
 }
 
 export default UserRegister;
+

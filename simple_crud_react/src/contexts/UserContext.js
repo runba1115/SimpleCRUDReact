@@ -1,7 +1,8 @@
 // Context API を用いたユーザー情報の管理を行うためのimport
 import { createContext, useState, useContext } from 'react';
-import { API_BASE_URL, APIS, MESSAGES } from '../config/Constant';
+import { API_BASE_URL, APIS, HTTP_STATUS_CODES, MESSAGES } from '../config/Constant';
 import { useCreateErrorFromResponse } from '../hooks/CreateErrorFromResponse';
+import { useShowErrorMessage } from '../hooks/ShowErrorMessage';
 
 // ユーザー情報と認証状態を格納するContext
 export const UserContext = createContext();
@@ -10,7 +11,7 @@ export const UserContext = createContext();
 /**
  * ユーザー情報をグローバルに保持・提供するためのProviderコンポーネント
  * @param {React.ReactNode} children - 子要素（このProviderに包まれるすべての要素）
- * @returns {JSX.Element} - Providerで囲われた子要素たち
+ * @returns- Providerで囲われた子要素たち
  */
 export const UserProvider = ({ children }) => {
     // ユーザー情報（ログイン後に設定）
@@ -19,8 +20,8 @@ export const UserProvider = ({ children }) => {
     // 認証済みかどうかの状態
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    // fetchのresponseがok以外の場合に使用する、想定外の値が帰ってきた場合にErrorを作成する共通機能
     const createErrorFromResponse = useCreateErrorFromResponse();
+    const showErrorMessage = useShowErrorMessage();
 
     /**
      * アプリ起動時などにセッションが有効かどうか確認し、
@@ -30,7 +31,7 @@ export const UserProvider = ({ children }) => {
     const initializeUser = async () => {
         try {
             // セッションに紐づいたユーザー情報を取得するAPIを呼び出す
-            const res = await fetch(`${API_BASE_URL}${APIS.GET_CURRENT_USER}`, {
+            const res = await fetch(`${API_BASE_URL}${APIS.USER_GET_CURRENT}`, {
                 credentials: 'include',
             });
 
@@ -47,7 +48,7 @@ export const UserProvider = ({ children }) => {
                 // 認証済みに設定する
                 setIsAuthenticated(true);
             } else {
-                if (res.status === 401) {
+                if (res.status === HTTP_STATUS_CODES.UNAUTHORIZED) {
                     // セッションが切れているなどで未認証の場合
                     console.log(MESSAGES.NOT_ALREADY_LOGGED_IN);
 
@@ -65,8 +66,7 @@ export const UserProvider = ({ children }) => {
             }
         } catch (error) {
             // fetch失敗または上記の throw によるキャッチ
-            console.error(MESSAGES.INTERNAL_ERROR, error);
-            alert(MESSAGES.INTERNAL_ERROR);
+            showErrorMessage(error, MESSAGES.USER_INFO_GET_FAILED)
 
             // 未ログイン状態に設定する
             setUserInfo(null);
@@ -79,23 +79,23 @@ export const UserProvider = ({ children }) => {
      */
     const handleLogout = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}${APIS.LOGOUT}`, {
+            const res = await fetch(`${API_BASE_URL}${APIS.USER_LOGOUT}`, {
                 method: "POST",
                 credentials: "include",
             });
 
             if (res.ok) {
                 // 成功したら未ログイン状態に設定する
-                console.log(MESSAGES.LOGGED_OUT);
+                console.log(MESSAGES.LOG_OUT_SUCCESS);
                 setIsAuthenticated(false);
                 setUserInfo(null);
             } else {
                 // それ以外の想定外エラー
                 throw await createErrorFromResponse(res);
             }
-        } catch (err) {
+        } catch (error) {
             // 通信エラーや想定外の例外
-            console.error(MESSAGES.FAILED_LOGGED_OUT, err);
+            showErrorMessage(error, MESSAGES.LOG_OUT_FAILED)
         }
     };
 
@@ -117,8 +117,7 @@ export const UserProvider = ({ children }) => {
 
 /**
  * useUser フック：任意のコンポーネントでユーザー情報や認証状態を簡単に扱えるようにする
- * @returns {object} - Context内で提供されている各種値や関数
- * @throws {Error} - UserProviderで包まれていない場合にエラーを投げる
+ * @returns  - Context内で提供されている各種値や関数
  */
 export const useUser = () => {
     const context = useContext(UserContext);
