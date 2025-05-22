@@ -5,6 +5,7 @@ import { API_BASE_URL, APIS, HTTP_STATUS_CODES, MESSAGES, ROUTES } from '../conf
 import { useDeletePost } from '../hooks/DeletePost';
 import { useCreateErrorFromResponse } from '../hooks/CreateErrorFromResponse';
 import { useShowErrorMessage } from '../hooks/ShowErrorMessage';
+import './PostShow.css';
 
 /**
  * 投稿詳細画面
@@ -71,28 +72,29 @@ function PostShow() {
     }
 
     // 現在ログインしているユーザーが投稿者かどうか判定する（今後、投稿者でなければ編集、削除を行えないようにするため）
-    console.log(post);
-    const isOwner = post?.userId == userInfo?.id;
-    const buttonStyle = {
-        color: isOwner ? 'blue' : 'gray',
-    };
+    const isOwner = post?.user?.id == userInfo?.id;
+    const editButtonClass = isOwner ? '' : 'common_disable_button posts_detail_view_disable_button';
 
     return (
-        post == null ? (
-            <div>読み込み中です…</div>
-        ) : (
-            <div>
-                <Link to={`/posts/new`}> 新規作成</Link >
-                <h2>投稿詳細</h2>
-                <h3>{post.title}</h3>
-                <p>{post.content}</p>
-                <p>投稿者ID: {post.userId}</p>
-                <p>作成日時: {post.createdAt}</p>
-                <p>更新日時: {post.updatedAt}</p>
-                <Link to={ROUTES.POST_EDIT(post.id)} style={buttonStyle}>編集</Link>
-                <button style={buttonStyle} onClick={() => handleDelete(post.id)}>削除</button>
-            </div >
-        )
+        <div className='common_container'>
+            {post == null ? (
+                <div>読み込み中です…</div>
+            ) : (
+
+                <div className='posts_detail_view_post'>
+                    <h2>投稿詳細</h2>
+                    <p className="posts_simple_view_user">ユーザー名：{post.user.userName}</p>
+                    <h3>{post.title}</h3>
+                    <p>{post.content}</p>
+                    {/* <p>投稿者ID: {post.user.id}</p> */}
+                    <p>作成日時: {post.createdAt}</p>
+                    <p>更新日時: {post.updatedAt}</p>
+                    <Link to={ROUTES.POST_EDIT(post.id)} className={`common_button posts_simple_view_button posts_simple_view_edit_button ${editButtonClass}`}>編集</Link>
+                    <button onClick={() => handleDelete(post.id)} className={`common_button posts_simple_view_button posts_simple_view_delete_button ${editButtonClass}`}>削除</button>
+                </div >
+            )}
+        </div>
+
     );
 }
 

@@ -52,7 +52,8 @@ public class UserController {
 
         // 保存を実行する
         User savedUser = userRepository.save(user);
-        UserResponseDto userResponse = new UserResponseDto(savedUser.getId(), savedUser.getEmail());
+        UserResponseDto userResponse = new UserResponseDto(savedUser.getId(), savedUser.getEmail(),
+                savedUser.getUserName());
 
         return ResponseEntity.ok(userResponse);
     }
@@ -76,7 +77,7 @@ public class UserController {
 
         // 上記のままではパスワードのような、使用しない情報も含まれている。
         // ユーザーIDとメールアドレスだけを返す簡易レスポンスを作成して返す
-        UserResponseDto response = new UserResponseDto(user.getId(), user.getEmail());
+        UserResponseDto response = new UserResponseDto(user.getId(), user.getEmail(), user.getUserName());
         return ResponseEntity.ok(response);
     }
 }

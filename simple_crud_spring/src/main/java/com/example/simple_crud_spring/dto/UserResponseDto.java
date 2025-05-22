@@ -7,5 +7,5 @@ package com.example.simple_crud_spring.dto;
  * @param id    ユーザーID
  * @param email メールアドレス
  */
-public record UserResponseDto(Long id, String email) {
+public record UserResponseDto(Long id, String email, String userName) {
 }

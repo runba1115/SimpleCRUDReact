@@ -5,6 +5,7 @@ import { API_BASE_URL, APIS, MESSAGES, ROUTES } from '../config/Constant';
 import { useDeletePost } from '../hooks/DeletePost';
 import { useCreateErrorFromResponse } from '../hooks/CreateErrorFromResponse';
 import { useShowErrorMessage } from '../hooks/ShowErrorMessage';
+import './PostIndex.css';
 
 /**
  * 投稿一覧画面
@@ -13,7 +14,7 @@ import { useShowErrorMessage } from '../hooks/ShowErrorMessage';
 function PostIndex() {
     const { userInfo } = useContext(UserContext);
     const [posts, setPosts] = useState([]);
-    const deletePost = useDeletePost(useCallback(() => {getPosts();}, []));
+    const deletePost = useDeletePost(useCallback(() => { getPosts(); }, []));
     const createErrorFromResponse = useCreateErrorFromResponse();
     const showErrorMessage = useShowErrorMessage();
 
@@ -60,9 +61,9 @@ function PostIndex() {
     }
 
     return (
-        <div>
+        <div className='common_container '>
             {/* 新規投稿作成画面へのリンク */}
-            <Link to={`/posts/new`}>新規作成</Link>
+            <Link to={`/posts/new`} className='common_button posts_create_button'>新規作成</Link>
             <h2>投稿一覧</h2>
 
             {/* 投稿が存在しない場合のメッセージ表示 */}
@@ -73,18 +74,19 @@ function PostIndex() {
                     {posts.map(post => {
                         // 現在ログインしているユーザーが投稿者かどうか判定する（今後、投稿者でなければ編集、削除を行えないようにするため）
                         const isOwner = post.user.id == userInfo?.id;
-                        const buttonStyle = {
-                            color: isOwner ? 'blue' : 'gray',
-                        };
+                        const editButtonClass = isOwner ? '' : 'common_disable_button posts_detail_view_disable_button';
 
-                        return (<li key={post.id}>
-                            <h3>{post.title}</h3>
-                            <p>{post.content}</p>
-                            <small>投稿者ID: {post.user.id}</small>
-                            <Link to={ROUTES.POST_SHOW(post.id)}>詳細</Link>
-                            <Link to={ROUTES.POST_EDIT(post.id)} style={buttonStyle}>編集</Link>
-                            <button style={buttonStyle} onClick={() => handleDelete(post.id)}>削除</button>
-                        </li>);
+                        return (
+                            <div className="posts_simple_view_post">
+                                <p className="posts_simple_view_user">ユーザー名：{post.user.userName}</p>
+                                <h3 className="posts_simple_view_title">{post.title}</h3>
+                                <p>{post.content}</p>
+                                <Link to={ROUTES.POST_SHOW(post.id)} className="common_button posts_simple_view_button posts_simple_view_detail_button">詳細</Link>
+                                <Link to={ROUTES.POST_EDIT(post.id)} className={`common_button posts_simple_view_button posts_simple_view_edit_button ${editButtonClass}`}>編集</Link>
+                                <button  onClick={() => handleDelete(post.id)} className={`common_button posts_simple_view_button posts_simple_view_delete_button ${editButtonClass}`}>削除</button>
+
+                            </div>
+                        );
                     })}
                 </ul>
             )}

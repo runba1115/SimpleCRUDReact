@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import { ROUTES } from "../config/Constant";
+import './Header.css'
 
 /**
  * アプリケーション全体で表示されるヘッダー
@@ -11,26 +12,34 @@ function Header() {
     const { userInfo, isAuthenticated, handleLogout } = useUser();
 
     return (
-        <div>
-            {
-                isAuthenticated
-                    ? (
-                        // ログイン済みの場合：ユーザー情報とログアウトボタンを表示する
-                        <div>
-                            <p>{userInfo.email}</p>
-                            <p>{userInfo.id}</p>
-                            <button onClick={handleLogout}>ログアウト</button>
-                        </div>
-                    )
-                    : (
-                        // 未ログインの場合：新規登録／ログインリンクを表示する
-                        <>
-                            <Link to={ROUTES.USER_REGISTER}>新規登録</Link>
-                            <Link to={ROUTES.USER_LOGIN}>ログインする</Link>
-                        </>
-                    )
-            }
-        </div>
+        <header>
+            <div className="common_container header_container">
+                <div className="heder_left_element">
+                    <p>
+                        投稿サンプル
+                    </p>
+                </div>
+                <div className="header_right_element">
+                    {
+                        isAuthenticated
+                            ? (
+                                // ログイン済みの場合：ユーザー情報とログアウトボタンを表示する
+                                <>
+                                    <p>{userInfo.userName}</p>
+                                    <button onClick={handleLogout} className="common_button_to_link">ログアウト</button>
+                                </>
+                            )
+                            : (
+                                // 未ログインの場合：新規登録／ログインリンクを表示する
+                                <>
+                                    <Link to={ROUTES.USER_REGISTER}>新規登録</Link>
+                                    <Link to={ROUTES.USER_LOGIN}>ログインする</Link>
+                                </>
+                            )
+                    }
+                </div>
+            </div>
+        </header>
     );
 }
 

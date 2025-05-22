@@ -1,3 +1,5 @@
+import './PostFormFields.css'
+
 /**
  * 投稿作成（もしくは編集）画面の
  * @param {String} formTitle フォームのタイトル
@@ -10,29 +12,25 @@
  */
 function PostFormFields({ formTitle, title, content, onPostChange, onSubmit, buttonLabel }) {
     return (
-        <div>
+        <form onSubmit={onSubmit} className='common_container common_shadow post_form_container'>
             <h2>{formTitle}</h2>
-            <form onSubmit={onSubmit}>
-                <div>
-                    <label>タイトル:</label>
-                    <input
-                        type="text"
-                        value={title}
-                        name="title"
-                        onChange={onPostChange}
-                    />
-                </div>
-                <div>
-                    <label>内容:</label>
-                    <textarea
-                        value={content}
-                        name="content"
-                        onChange={onPostChange}
-                    />
-                </div>
-                <button type="submit">{buttonLabel}</button>
-            </form>
-        </div>
+            <label className='post_form_label'></label>
+            <input
+                type="text"
+                value={title}
+                name="title"
+                onChange={onPostChange}
+                className='post_form_input'
+            />
+            <label className='post_form_label'>内容</label>
+            <textarea
+                value={content}
+                name="content"
+                onChange={onPostChange}
+                className='post_form_textarea'
+            />
+            <input type="submit" className='common_button post_form_submit_button' value={buttonLabel} />
+        </form>
     );
 }
 

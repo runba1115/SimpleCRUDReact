@@ -61,7 +61,7 @@ function PostEdit() {
         try {
             // API を呼び出して投稿を更新する
             const response = await fetch(
-                `${API_BASE_URL}${APIS.POST_EDIT(userInfo.id)}`,
+                `${API_BASE_URL}${APIS.POST_EDIT(id)}`,
                 {
                     method: 'PUT',
                     headers:

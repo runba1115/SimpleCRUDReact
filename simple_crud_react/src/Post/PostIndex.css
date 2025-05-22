@@ -1,0 +1,66 @@
+/* 色の変数設定 */
+:root {
+    --create_button_background_color: #28a745; /* 新規作成ボタンの背景色 */
+    --detail_button_background_color: #007bff; /* 詳細ボタンの背景色 */
+    --edit_button_background_color: #ffc107; /* 編集ボタンの背景色 */
+    --delete_button_background_color: #dc3545; /* 削除ボタンの背景色 */
+}
+
+/* 新規作成ボタン */
+.posts_create_button{
+    background-color: var(--create_button_background_color);
+    margin-bottom: 15px;
+}
+
+/* 非活性時の新規作成ボタン */
+/* ※commonの中に似たものがあるが、それを適用しても上記により背景色などが上書きされてしまう。
+ここで同様の設定を行う。 */
+.posts_create_button_disable{
+    background-color: var(--common_disabled_button_background);
+    color: var(--common_disabled_button_text_color);
+}
+
+/* 各投稿のスタイル */
+.posts_simple_view_post {
+    margin-bottom: 20px;
+    border-top: 1px solid var(--common_border_color);
+    padding: 5px;
+}
+
+.posts_simple_view_post p {
+    margin: 5px 0;
+}
+
+/* 投稿一覧画面の投稿内のボタン 共通スタイル */
+.posts_simple_view_button{
+    margin-top: 5px;
+    margin-right: 10px;
+    font-size: 15px;
+    width: 75px;
+    line-height: 40px;
+}
+
+/* 詳細ボタン */
+.posts_simple_view_detail_button {
+    background-color: var(--detail_button_background_color);
+}
+
+/* 編集ボタン */
+.posts_simple_view_edit_button {
+    background-color: var(--edit_button_background_color);
+    color: white;
+    text-decoration: none;
+}
+
+/* 削除ボタン */
+.posts_simple_view_delete_button {
+    background-color: var(--delete_button_background_color);
+}
+
+/* ボタンの無効化 */
+/* ※commonの中に似たものがあるが、それを適用しても上記により背景色などが上書きされてしまう。
+ここで同様の設定を行う。 */
+.posts_simple_view_disable_button{
+    background-color: var(--common_disabled_button_background);
+    color: var(--common_disabled_button_text_color);
+}

@@ -4,6 +4,7 @@ import { API_BASE_URL, MESSAGES, ROUTES } from '../config/Constant';
 import { useUser } from '../contexts/UserContext';
 import { useShowErrorMessage } from '../hooks/ShowErrorMessage';
 import { useCreateErrorFromResponse } from '../hooks/CreateErrorFromResponse';
+import './UserAuth.css';
 
 /**
  * ログイン画面
@@ -11,7 +12,7 @@ import { useCreateErrorFromResponse } from '../hooks/CreateErrorFromResponse';
  */
 function UserLogin() {
     const { initializeUser } = useUser();
-    const {setIsAuthenticated, setUserInfo} = useUser();
+    const { setIsAuthenticated, setUserInfo } = useUser();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -58,31 +59,40 @@ function UserLogin() {
     };
 
     return (
-        <form onSubmit={handleLogin}>
-            <div>
-                <label>メールアドレス:</label><br />
-                <input
-                    type="email"
-                    value={email}
-                    autoComplete="username"
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="メールアドレス"
-                    required
-                />
+        <div className="common_container">
+            <div className='user_auth_container'>
+                <h2 className='user_auth_title'>ログイン</h2>
+                <form onSubmit={handleLogin} className='user_auth_form'>
+                    <div className='user_auth_form_group'>
+                        <label className='user_auth_label'>メールアドレス</label>
+                        <input
+                            type="email"
+                            value={email}
+                            autoComplete="username"
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="メールアドレス"
+                            required
+                            className='user_auth_input'
+                        />
+                    </div>
+                    <div className='user_auth_form_group'>
+                        <label className='user_auth_label'>パスワード</label>
+                        <input
+                            type="password"
+                            value={password}
+                            autoComplete="current-password"
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="パスワード"
+                            required
+                            className='user_auth_input'
+                        />
+                    </div>
+                    <div className='user_auth_button_group'>
+                        <input type="submit" className='common_button user_auth_login_button' value="ログイン" />
+                    </div>
+                </form>
             </div>
-            <div>
-                <label>パスワード:</label><br />
-                <input
-                    type="password"
-                    value={password}
-                    autoComplete="current-password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="パスワード"
-                    required
-                />
-            </div>
-            <button type="submit">ログイン</button>
-        </form>
+        </div>
     );
 }
 

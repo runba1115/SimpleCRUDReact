@@ -87,13 +87,13 @@ public class PostController {
      * @return 更新後の投稿データを含む HTTP レスポンス。該当IDが存在しない場合は404を返す
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Post> update(@PathVariable Long id, @Valid @RequestBody Post updatedPost) {
+    public ResponseEntity<Post> update(@PathVariable Long id, @Valid @RequestBody PostRequestDto updatedPost) {
         // 指定IDの投稿を検索する
         return postRepository.findById(id)
                 .map(post -> {
                     // タイトルと本文を新しい値に更新
-                    post.setTitle(updatedPost.getTitle());
-                    post.setContent(updatedPost.getContent());
+                    post.setTitle(updatedPost.title);
+                    post.setContent(updatedPost.content);
 
                     // 更新された投稿を保存して返す
                     Post savedPost = postRepository.save(post);

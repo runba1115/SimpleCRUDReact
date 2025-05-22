@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { API_BASE_URL, APIS, MESSAGES, ROUTES } from '../config/Constant';
 import { useShowErrorMessage } from '../hooks/ShowErrorMessage';
 import { Routes, useNavigate } from 'react-router-dom';
+import './UserAuth.css';
 
 /**
  * ユーザー登録画面
@@ -44,38 +45,45 @@ function UserRegister() {
     };
 
     return (
-        <div>
-            <h2>ユーザー登録</h2>
-            <form onSubmit={handleRegister}>
-                <div>
-                    <label>ユーザー名:</label>
-                    <input
-                        type="text"
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>メールアドレス:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>パスワード:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">登録する</button>
-            </form>
+        <div className='common_container'>
+            <div className='user_auth_container'>
+                <h2 className='user_auth_title'>ユーザー登録</h2>
+                <form onSubmit={handleRegister} className='user_auth_form'>
+                    <div className='user_auth_form_group'>
+                        <label className='user_auth_label'>ユーザー名</label>
+                        <input
+                            type="text"
+                            value={userName}
+                            onChange={(e) => setUserName(e.target.value)}
+                            required
+                            className='user_auth_input'
+                        />
+                    </div>
+                    <div className='user_auth_form_group'>
+                        <label className='user_auth_label'>メールアドレス</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className='user_auth_input'
+                        />
+                    </div>
+                    <div className='user_auth_form_group'>
+                        <label className='user_auth_label'>パスワード</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className='user_auth_input'
+                        />
+                    </div>
+                    <div className='user_auth_button_group'>
+                        <input type="submit" className='common_button user_auth_login_button' value="登録する" />
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
