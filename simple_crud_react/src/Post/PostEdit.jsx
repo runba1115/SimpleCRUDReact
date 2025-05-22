@@ -99,7 +99,10 @@ function PostEdit() {
     // 初めて表示された時の初期化処理
     useEffect(() => {
         // ログインしていない場合ブロックする
-        blockIfNotLoggedIn();
+        if(blockIfNotLoggedIn()){
+            // ログインしていないためブロックした。以降の処理を行わない
+            return;
+        }
 
         /**
          * 編集対象の投稿を取得する非同期関数
@@ -112,7 +115,10 @@ function PostEdit() {
                     // 投稿の取得に成功した場合
                     const data = await response.json();
                     // 投稿の作成者でない場合ブロックする
-                    blockIfNotCreater(data);
+                    if(blockIfNotCreater(data)){
+                        // ブロックしたため以降の処理を行わない
+                        return ;
+                    }
 
                     setPost(data)
                 } else {

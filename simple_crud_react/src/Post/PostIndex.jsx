@@ -81,9 +81,9 @@ function PostIndex() {
                             <h3>{post.title}</h3>
                             <p>{post.content}</p>
                             <small>投稿者ID: {post.user.id}</small>
-                            <Link to={ROUTES.POST_SHOW(post.id)} style={buttonStyle}>詳細</Link>
+                            <Link to={ROUTES.POST_SHOW(post.id)}>詳細</Link>
                             <Link to={ROUTES.POST_EDIT(post.id)} style={buttonStyle}>編集</Link>
-                            <button onClick={() => handleDelete(post.id)}>削除</button>
+                            <button style={buttonStyle} onClick={() => handleDelete(post.id)}>削除</button>
                         </li>);
                     })}
                 </ul>

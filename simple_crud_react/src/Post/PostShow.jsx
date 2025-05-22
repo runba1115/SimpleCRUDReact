@@ -74,7 +74,6 @@ function PostShow() {
     console.log(post);
     const isOwner = post?.userId == userInfo?.id;
     const buttonStyle = {
-        // color: isOwner ? 'blue' : 'gray',
         color: isOwner ? 'blue' : 'gray',
     };
 
@@ -90,9 +89,8 @@ function PostShow() {
                 <p>投稿者ID: {post.userId}</p>
                 <p>作成日時: {post.createdAt}</p>
                 <p>更新日時: {post.updatedAt}</p>
-                <Link to={ROUTES.POST_SHOW(post.id)} style={buttonStyle}>詳細</Link>
                 <Link to={ROUTES.POST_EDIT(post.id)} style={buttonStyle}>編集</Link>
-                <button onClick={() => handleDelete(post.id)}>削除</button>
+                <button style={buttonStyle} onClick={() => handleDelete(post.id)}>削除</button>
             </div >
         )
     );

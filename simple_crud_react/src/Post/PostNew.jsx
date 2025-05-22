@@ -30,7 +30,10 @@ function PostNew() {
      * - ユーザーIDを投稿データに設定
      */
     useEffect(()=>{
-        blockIfNotLoggedIn();
+        if(blockIfNotLoggedIn()){
+            // ログインしていないためブロックした。以降の処理を行わない
+            return;
+        }
         if(userInfo?.id != null){
             setPost(prevPost => ({...prevPost, userId: userInfo.id}));
         }
