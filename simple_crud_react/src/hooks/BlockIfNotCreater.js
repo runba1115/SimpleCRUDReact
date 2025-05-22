@@ -15,9 +15,9 @@ export const useBlockIfNotCreater = () => {
      * 投稿の作成者とログインしているユーザーが異なる場合、機能の使用をブロック（投稿一覧に遷移）する関数
      */
     const blockIfNotCreater = useCallback((post) => {
-        const isCreater = (isAuthenticated && userInfo != null && userInfo.id != null && post.userId === userInfo.id);
+        const isCreater = (isAuthenticated && userInfo != null && userInfo.id != null && post.user.id === userInfo.id);
         if(!isCreater){
-            alert(MESSAGES.CANT_USE_FUNCTION_DUE_TO_NOT_LOGGED_IN);
+            alert(MESSAGES.DONT_HAVE_PROMISSION);
             navigate(ROUTES.POST_INDEX);
         }
     }, [navigate]);
